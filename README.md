@@ -40,7 +40,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
 
 - **Plain CSS (modularised per component/page)**
   - Example: `EventDetails.css`, `ParticipantDashboard.css`, `ClubManagement.css`, `Toast.css`, etc.
-  - **Why**: For an academic project with custom layout and theme, plain CSS keeps dependencies minimal and makes it easy to see styling in one place per component.
+  - **Why**: For a project with custom layout and theme, plain CSS keeps dependencies minimal and makes it easy to see styling in one place per component.
   - **What it solves**: Component-scoped styling without adding a UI library; fine-grained control for responsive layout and dashboards.
 
 - **Browser Fetch API**
@@ -78,7 +78,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
 
 - **Nodemailer (used inside `utils/mailer.js`)**
   - **Why**: Send system emails: organizer provisioning credentials, organizer password resets, event approval notifications.
-  - **What it solves**: External communication and credential delivery as per assignment requirement for admin-provisioned organizer accounts.
+  - **What it solves**: External communication and credential delivery for admin-provisioned organizer accounts.
 
 - **qrcode**
   - **Why**: Generate QR codes for registrations and tickets.
@@ -86,11 +86,9 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
 
 ---
 
-## 3. Advanced Features by Tier (With Justification and Design Notes)
+## 3. Advanced Features (With Justification and Design Notes)
 
-### 3.1 Tier A Features
-
-#### 3.1.1 Team-Based Registration (Invite Workflow)
+### 3.1 Team-Based Registration (Invite Workflow)
 
 - **What**:
   - Team registration via `Team` model with invite tokens and status.
@@ -107,7 +105,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
   - When all accepted and team is valid, `completeTeamIfReady` creates actual `Registration` documents for each member and issues tickets via `issueTicket`.
   - For merchandise events, team registration is explicitly disallowed in backend and UI to avoid ambiguous payment semantics.
 
-#### 3.1.2 Payment Approval Workflow and Merchandise Store
+### 3.2 Payment Approval Workflow and Merchandise Store
 
 - **What**:
   - Merchandise events (`Event.type === 'Merchandise'`) with:
@@ -116,7 +114,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
     - Payment proof uploads by participants.
     - Organizer payment approval UI (`PaymentApproval` page) and organizer-specific view in `RegistrationManagement`.
 - **Why this feature**:
-  - Festival T-shirts and merchandise sales are a major real-world requirement. The assignment’s Tier A explicitly mentions payment approval and merchandise, which are implemented end-to-end.
+  - Festival T-shirts and merchandise sales are a major real-world requirement. This is implemented end-to-end with payment approval workflows and merchandise management.
 - **Design and technical decisions**:
   - **Event model**:
     - `merchandise` embedded object: `sizes`, `colors`, `variants` (with price and stock), `stock`, `purchaseLimit`.
@@ -141,9 +139,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
     - **RegistrationManagement** and **PaymentApproval**:
       - Provide organizer dashboards to review proofs, approve/reject, and see revenue analytics.
 
-### 3.2 Tier B Features
-
-#### 3.2.1 Real-Time Discussion Forum (Per Event) with Notifications
+### 3.3 Real-Time Discussion Forum (Per Event) with Notifications
 
 - **What**:
   - Discussion forum for each event (`/forum/:eventId` and embedded in `EventDetails`).
@@ -154,7 +150,7 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
     - Reactions on threads and replies.
     - Polling-based “live updates” with a notification badge and toast notifications.
 - **Why this feature**:
-  - Tier B explicitly mentions a real-time discussion forum with moderation, announcements, and reactions. This module addresses participant-organizer communication efficiently.
+  - A real-time discussion forum with moderation, announcements, and reactions addresses participant-organizer communication efficiently.
 - **Design and technical decisions**:
   - **Backend**:
     - `Discussion` model with embedded `replies` and `reactions`.
@@ -172,12 +168,12 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
       - Reactions implemented via a configurable reaction set.
     - Uses existing `Toast` system to show non-intrusive, top-right notifications.
 
-#### 3.2.2 Organizer Password Reset Workflow
+### 3.4 Organizer Password Reset Workflow
 
 - **What**:
   - Organizer-initiated password reset requests and admin review process.
 - **Why this feature**:
-  - Tier B points to more advanced user management flows. This meets the requirement that organizer accounts are provisioned and controlled by admin, not self-service.
+  - Advanced user management flows ensure that organizer accounts are securely provisioned and controlled by admins, not self-service.
 - **Design and technical decisions**:
   - `PasswordResetRequest` model:
     - Tracks `organizer`, `status` (Pending/Approved/Rejected), `reason`, `adminComment`, `generatedPassword`, and `history`.
@@ -193,16 +189,14 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
   - **ProfilePage** for organizers:
     - UI to submit reset requests with reason and view their history.
 
-### 3.3 Tier C Features
-
-#### 3.3.1 Feedback and Rating System with Analytics and Export
+### 3.5 Feedback and Rating System with Analytics and Export
 
 - **What**:
   - Event-specific feedback system:
     - Participants can rate (1–5) and comment (optionally anonymous).
     - Organizer/admin can view aggregate statistics and export CSV.
 - **Why this feature**:
-  - Tier C mentions analytics and advanced feedback; this provides organizers with actionable insights and data portability.
+  - Analytics and advanced feedback provide organizers with actionable insights and data portability.
 - **Design and technical decisions**:
   - **Backend**:
     - `Feedback` model with:
@@ -222,14 +216,14 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
         - Only confirmed registrations may submit.
         - One feedback per user per event.
 
-#### 3.3.2 Admin and Organizer Dashboards with Aggregated Analytics
+### 3.6 Admin and Organizer Dashboards with Aggregated Analytics
 
 - **What**:
   - Dashboards for both admin and organizer views:
     - Admin dashboard with high-level system stats (users by role, events by status, registrations, payments, clubs, recent activity).
     - Organizer dashboard with event counts, registration stats, completed event analytics, and quick actions.
 - **Why this feature**:
-  - Tier C encourages analytics and system-wide insights. Dashboards make it easy for stakeholders to monitor the system without manual queries.
+  - System-wide insights and dashboards make it easy for stakeholders to monitor the system without manual queries.
 - **Design and technical decisions**:
   - **Admin**:
     - `getSystemStats` aggregates counts from `User`, `Event`, `Registration`, `Club`.
@@ -352,6 +346,6 @@ Full-stack MERN application to manage Felicity and campus events, clubs, registr
 
 ## 6. Notes
 
-- UI is implemented using custom CSS (no external UI library), which was a deliberate choice to keep the project dependencies simple and the styling transparent for grading.
-- All advanced features specified in the assignment (Tier A/B/C) are implemented as described above, with security and data consistency enforced at the backend level and validated at the frontend.
+- UI is implemented using custom CSS (no external UI library), which was a deliberate choice to keep the project dependencies simple and the styling transparent.
+- All advanced features are implemented as described above, with security and data consistency enforced at the backend level and validated at the frontend.
 
